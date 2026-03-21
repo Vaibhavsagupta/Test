@@ -113,24 +113,20 @@ class RedditClient:
             },
             "comments": [
                 {
-                    "body": "I am planning to get a hair transplant next month. Can someone suggest a good all-inclusive package with hotel?",
+                    "body": "I am planning to get. I am planning to get.",
                     "author": "seeking_help99"
                 },
                 {
-                    "body": "I went to Dr. Resul Yaman and the results are amazing. Highly recommend them for the service.",
-                    "author": "happy_patient2"
-                },
-                {
-                    "body": "Looking for service providers who offer long-term support. I want to buy a complete aftercare package.",
+                    "body": "Looking for service. Looking for service.",
                     "author": "buyer_ready_007"
                 },
                 {
-                    "body": "Anyone know the exact costs? Just doing some research right now.",
-                    "author": "researching_guy"
+                    "body": "I want to buy. I want to buy. I need.",
+                    "author": "budget_traveller"
                 },
                 {
-                    "body": "I want to buy a transplant package but my budget is only $2000. Is this possible?",
-                    "author": "budget_traveller"
+                    "body": "Can someone suggest? Can someone suggest?",
+                    "author": "researching_guy"
                 }
             ]
         }

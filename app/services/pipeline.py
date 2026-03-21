@@ -11,6 +11,10 @@ def extract_leads_pipeline(url):
     data = client.get_data(url)
     post_info = data.get("post_info", {})
     
+    # If there's a fetch error, return it directly
+    if "error" in post_info:
+        return {"url": url, "error": post_info["error"], "leads": [], "lead_count": 0}
+    
     # Check for NSFW
     from app.config import settings
     if post_info.get("over_18", False) and settings.ENABLE_NSFW_FILTERING:
