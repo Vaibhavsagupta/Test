@@ -6,9 +6,9 @@ router = APIRouter()
 recommender = RecommenderService()
 
 @router.get("/search")
-def search(q: str, top_k: int = 10):
+def search(q: str, top_k: int = 10, include_nsfw: bool = False):
     """ Task 1: Recommend relevant subreddits based on query. """
-    return recommender.search_subreddits(q, top_k)
+    return recommender.search_subreddits(q, top_k, include_nsfw=include_nsfw)
 
 @router.get("/extract-leads")
 def extract_leads(url: str):

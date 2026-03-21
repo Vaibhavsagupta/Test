@@ -1,9 +1,13 @@
+import os
+# Fix for WinError 1114 / DLL initialization issues on Windows
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
+
+# Import torch first before other heavy DLL-using libraries like pandas/faiss
+from sentence_transformers import SentenceTransformer
 import pandas as pd
 import numpy as np
 import faiss
-from sentence_transformers import SentenceTransformer
 import pickle
-import os
 from rank_bm25 import BM25Okapi
 
 # Paths
@@ -18,8 +22,8 @@ def build_indices():
     df = pd.read_parquet(os.path.join(PROCESSED_DIR, "subreddit_profiles.parquet"))
     
     # 1. Phase 7: Semantic Embeddings
-    print("Initializing embedding model (all-MiniLM-L6-v2)...")
-    model = SentenceTransformer('all-MiniLM-L6-v2')
+    print("Initializing embedding model (all-MiniLM-L6-v2) on CPU...")
+    model = SentenceTransformer('all-MiniLM-L6-v2', device='cpu')
     
     print(f"Encoding {len(df)} profiles (this may take a few minutes)...")
     embeddings = model.encode(df['profile_text'].tolist(), show_progress_bar=True, normalize_embeddings=True)

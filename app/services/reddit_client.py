@@ -34,7 +34,8 @@ class RedditClient:
                     "title": post_data.get('title'),
                     "subreddit": post_data.get('subreddit'),
                     "author": post_data.get('author'),
-                    "selftext": post_data.get('selftext')
+                    "selftext": post_data.get('selftext'),
+                    "over_18": post_data.get('over_18', False)
                 }
                 
                 if len(data) > 1:

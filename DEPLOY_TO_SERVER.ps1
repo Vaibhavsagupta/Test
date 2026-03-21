@@ -13,7 +13,7 @@ if (Test-Path $zipFile) { Remove-Item $zipFile }
 $tempDir = Join-Path $env:TEMP "deploy_tmp"
 if (Test-Path $tempDir) { Remove-Item -Recurse -Force $tempDir }
 New-Item -ItemType Directory -Path $tempDir
-Copy-Item -Path "Dockerfile", "docker-compose.yml", "app.py", "*.py", "requirements.txt", "models", "data" -Destination $tempDir -Recurse
+Copy-Item -Path "Dockerfile", "docker-compose.yml", "app.py", "*.py", "requirements.txt", "models", "data", "app" -Destination $tempDir -Recurse
 Compress-Archive -Path "$tempDir\*" -DestinationPath $zipFile
 Remove-Item -Recurse -Force $tempDir
 
@@ -55,5 +55,7 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
-Write-Host "Deployment complete! API available at http://$SERVER_IP:8000/search?q=your_query" -ForegroundColor Green
+Write-Host "Deployment complete!" -ForegroundColor Green
+Write-Host "Task 1 (Search): http://$SERVER_IP:8000/search?q=query" -ForegroundColor Green
+Write-Host "Task 2 (Leads):  http://$SERVER_IP:8000/docs" -ForegroundColor Green
 Remove-Item $zipFile

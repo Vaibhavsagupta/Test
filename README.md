@@ -96,6 +96,22 @@ Submit user feedback to boost specific recommendations.
 }
 ```
 
+### `GET /extract-leads` (Task 2: Lead Extraction)
+Identify and score potential leads from a specific Reddit post URL.
+- **Parameters**: 
+  - `url` (string): The direct link to a Reddit post.
+- **Functionality**:
+  - Scrapes comments from the provided URL.
+  - Automatically identifies user intent (High/Medium/Low interest).
+  - Extracts key topics/keywords from each potential lead.
+  - Assigns a numerical lead score for prioritization.
+- **Example**: `GET /extract-leads?url=https://www.reddit.com/...`
+
+### `GET /test-live`
+A shortcut endpoint that tests the Task 2 pipeline with a pre-configured live Reddit post.
+
+---
+
 ### `GET /health`
 Verify server status.
 

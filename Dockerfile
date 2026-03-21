@@ -19,5 +19,5 @@ COPY . .
 # Expose the port
 EXPOSE 8000
 
-# Command to run the application
-CMD ["python", "app.py"]
+# Command to run the application (Integrated Task 1 & 2)
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

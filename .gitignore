@@ -9,7 +9,9 @@ __pycache__/
 data/raw/
 data/processed/
 data/interim/
-error.log
+*.log
+*.txt
+feedback_logs.pkl
 
 # Models (optional but recommended if they are large)
 # models/

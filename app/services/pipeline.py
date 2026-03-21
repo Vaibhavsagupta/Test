@@ -10,6 +10,12 @@ def extract_leads_pipeline(url):
     # Fetch data from Reddit
     data = client.get_data(url)
     post_info = data.get("post_info", {})
+    
+    # Check for NSFW
+    from app.config import settings
+    if post_info.get("over_18", False) and settings.ENABLE_NSFW_FILTERING:
+        return {"error": "NSFW content is blocked by current safety settings.", "url": url}
+
     raw_comments = data.get("comments", [])
 
     results = []

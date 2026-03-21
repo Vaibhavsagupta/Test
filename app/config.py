@@ -10,6 +10,10 @@ class Settings(BaseSettings):
     # App Settings
     APP_TITLE: str = "Reddit Lead Recommendation System"
     
+    # NSFW Filtering
+    ENABLE_NSFW_FILTERING: bool = True
+    NSFW_KEYWORDS: list = ["nsfw", "porn", "sex", "gonewild", "adult", "erotica", "hentai", "xxx"]
+    
     class Config:
         env_file = ".env"
 

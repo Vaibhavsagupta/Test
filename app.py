@@ -37,18 +37,31 @@ class FeedbackRequest(BaseModel):
     subreddit: str
     action: str
 
+from app.config import settings
+import re
+
 @app.get("/search")
-def search(q: str, top_k: int = 10):
+def search(q: str, top_k: int = 10, include_nsfw: bool = Query(default=False)):
     start_time = time.time()
     
     # 1. Semantic Search (Top 50)
-    query_vector = model.encode([q], normalize_embeddings=True).astype('float32')
-    scores, indices = index.search(query_vector, 50)
+    query_vector = model.encode([q], normalize_embeddings=True, device='cpu').astype('float32')
+    scores, indices = index.search(query_vector, 75) # increase search space slightly to account for filtering
     
     candidates = []
+    nsfw_pattern = "|".join(settings.NSFW_KEYWORDS)
+    
     for score, idx in zip(scores[0], indices[0]):
         if idx < len(mapping):
             res = mapping[idx].copy()
+            
+            # NSFW Check (Filter on-the-fly)
+            if not include_nsfw and settings.ENABLE_NSFW_FILTERING:
+                name = res.get('subreddit', '').lower()
+                desc = res.get('description', '').lower()
+                if re.search(nsfw_pattern, name) or re.search(nsfw_pattern, desc):
+                    continue
+                    
             res['semantic_score'] = float(score)
             res['index'] = int(idx)
             res['subscribers'] = int(res.get('subscribers', 0))
