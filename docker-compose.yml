@@ -1,0 +1,9 @@
+services:
+  subreddit-engine:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+    restart: always

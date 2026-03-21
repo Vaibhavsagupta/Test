@@ -1,0 +1,15 @@
+# Environments
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+
+# Data
+data/raw/
+data/processed/
+data/interim/
+error.log
+
+# Models (optional but recommended if they are large)
+# models/
