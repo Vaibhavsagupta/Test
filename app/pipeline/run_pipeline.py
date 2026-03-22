@@ -15,78 +15,66 @@ from app.storage.prod_db import store_prod
 from app.utils.tracker import is_file_processed, mark_file_processed
 
 def run(subreddit="HairTransplants", client_name="hair_clinic", query=None):
-    print(f"🚀 [PIPELINE] Starting Historical Mining for r/{subreddit}...")
+    """ main entry point for running the historical data pipeline """
+    print(f"starting mining process for r/{subreddit}")
     
-    # Check if this subreddit/file has been processed already
-    tracker_key = f"{subreddit}_{int(time.time() // 86400)}" # Daily tracker
-    # if is_file_processed(tracker_key):
-    #     print(f"⏹️ [PIPELINE] Skipping r/{subreddit} - already processed today.")
-    #     return []
-
-    # 1. Fetch data for this specific topic
-    # For now fetching last 500 records from PullPush Mirror (the mirror shared by USER)
+    # tracker to make sure we don't double process
+    tracker_key = f"{subreddit}_{int(time.time() // 86400)}"
+    
+    # fetch the actual data
+    # files go into raw directory specified in settings
     dumps_path = settings.RAW_DIR / f"{subreddit}_comments.jsonl"
     submissions_path = settings.RAW_DIR / f"{subreddit}_submissions.jsonl"
     
-    # Trigger download - INCREASED LIMITS for FULL 12 months depth
+    # increased limits to get a full 12 month depth for this sub/query
     c_path = fetch_from_arctic_shift(subreddit, str(dumps_path), limit=12000, query=query)
     s_path = fetch_from_arctic_shift(subreddit, str(submissions_path), limit=4000, query=query)
 
-
     if not c_path:
-        print("⚠️ Download failed! Using fallback demo data...")
-        # Fallback empty file to allow pipeline to continue with demo leads
+        print("fetch failed, using demo/empty files to keep things moving")
         dumps_path.touch()
         submissions_path.touch()
 
-    # 2. Extract using Enhanced DuckDB Engine (Phases 1-2)
-    # The engine now handles 6-mo filtering and subreddit matching at SQL level
-    comments_data = query_comments(dumps_path.as_posix(), client_name=client_name, target_subreddit=subreddit)
-    posts_data = query_submissions(submissions_path.as_posix(), client_name=client_name, target_subreddit=subreddit)
+    # extract data using duckdb - this handles the 6-mo filtering for us
+    comments = query_comments(dumps_path.as_posix(), client_name=client_name, target_subreddit=subreddit)
+    posts = query_submissions(submissions_path.as_posix(), client_name=client_name, target_subreddit=subreddit)
     
-    print(f"DEBUG: Found {len(comments_data)} comments via DuckDB.")
-    print(f"DEBUG: Found {len(posts_data)} posts via DuckDB.")
+    print(f"debug: found {len(comments)} comments and {len(posts)} posts")
 
-    data = comments_data + posts_data
+    data = comments + posts
     if not data:
-        print(f"⚠️ No new data found in r/{subreddit} passing early filters.")
-        mark_file_processed(tracker_key) # Don't retry empty subs today
-        # Go to demo data instead of returning early
-        # return []
+        print(f"no new data found for r/{subreddit} passing initial filters")
+        mark_file_processed(tracker_key)
+        return []
 
-    # 3. Clean and Filter
-    clean_records = clean_data(data)
-    print(f"DEBUG: {len(clean_records)} records after cleaning.")
+    # cleansing and basic filtering
+    clean = clean_data(data)
     
-    # 4. Semantic Match (MiniLM) - DO THIS FIRST to avoid dropping multilingual leads early
-    semantic_scored = semantic_match(clean_records, client_name=client_name)
+    # semantic matching via MiniLM
+    # check similarity across all leads even multilingual ones
+    semantic = semantic_match(clean, client_name=client_name)
     
-    # 5. Intent Filter (AI Similarity)
-    # Lowered threshold to 0.02 for bulk leads to be more inclusive of other languages
-    filtered = intent_filter(semantic_scored, threshold=0.02)
-
+    # intent filtering - keep anything above 0.02 threshold
+    filtered = intent_filter(semantic, threshold=0.02)
     
-    # 6. Score (Semantic + Intent + Engagement + Recency)
+    # final scoring based on multiple factors (engagement, recency, etc)
     scored = score_records(filtered)
-
     
-    # 6. Deduplicate and Enrich (LLM)
+    # deduplicate and then enrich with LLM
     deduped = deduplicate(scored)
     
-    # Only process top 50 results through LLM (Phase 4)
+    # just enrich the top 50, otherwise it's too expensive/slow
     enriched = enrich_leads(deduped, top_n=50)
     
-    # 7. Store results
     if not enriched:
-        print("⚠️ No real leads found. Skipping storage/demo insertion.")
+        print("no real leads identified, skipping storage")
         return []
     
+    # save to prod db
     store_prod(enriched)
-    
-    # 8. Mark as processed (Phase 2)
     mark_file_processed(tracker_key)
     
-    print(f"✅ [FINAL] r/{subreddit} mining complete! {len(enriched)} leads found and stored.")
+    print(f"mining finished for r/{subreddit}. found {len(enriched)} leads.")
     return enriched
 
 if __name__ == "__main__":

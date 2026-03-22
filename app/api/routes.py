@@ -40,7 +40,7 @@ def run_historical_pipeline(subreddit: str):
         # Run in background
         thread = threading.Thread(target=trigger_pipeline, kwargs={"subreddit": subreddit})
         thread.start()
-        return {"message": f"Pipeline triggered for r/{subreddit}. Mining pichle 12 mahine ka data."}
+        return {"message": f"Pipeline triggered for r/{subreddit}. Mining data for the past 12 months."}
     except Exception as e:
         return {"error": f"Failed to trigger pipeline: {str(e)}", "type": str(type(e).__name__)}
 

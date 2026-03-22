@@ -15,7 +15,7 @@ def show_dump_stats():
 
     while True:
         os.system('cls' if os.name == 'nt' else 'clear')
-        print("--- 📂 ZST DUMP PROCESSING DASHBOARD ---")
+        print("--- ZST DUMP PROCESSING DASHBOARD ---")
         
         # Read Progress File (if it exists)
         progress_data = None
@@ -38,9 +38,9 @@ def show_dump_stats():
             filled = int(bar_len * pct / 100)
             bar = "█" * filled + "-" * (bar_len - filled)
             
-            print(f"📊 Overall Progress: [{bar}] {pct}%")
-            print(f"📁 Tasks: {completed} / {total} Completed ({total - completed} Remaining)")
-            print(f"⛏️  Current: {current} (Client: {client})")
+            print(f"Overall Progress: [{bar}] {pct}%")
+            print(f"Tasks: {completed} / {total} Completed ({total - completed} Remaining)")
+            print(f"Current: {current} (Client: {client})")
             
             # ETA Calculation
             try:
@@ -52,9 +52,9 @@ def show_dump_stats():
                     eta_seconds = time_per_task * remaining_tasks
                     eta_min = int(eta_seconds // 60)
                     eta_sec = int(eta_seconds % 60)
-                    print(f"⌛ Estimated Time Remaining: {eta_min}m {eta_sec}s")
+                    print(f"Estimated Time Remaining: {eta_min}m {eta_sec}s")
                 else:
-                    print(f"⌛ Estimating time...")
+                    print(f"Estimating time...")
             except:
                 pass
         else:
@@ -85,11 +85,11 @@ def show_dump_stats():
             print(f"TOTAL HISTORICAL LEADS: {total_historical}")
             
             # Show last 3 real leads
-            print("\n--- 🆕 LATEST HISTORICAL LEADS ---")
+            print("\n--- LATEST HISTORICAL LEADS ---")
             cursor.execute("SELECT subreddit, comment FROM leads ORDER BY id DESC LIMIT 3")
             latest = cursor.fetchall()
             for l in latest:
-                print(f" ✅ [r/{l[0]}] {l[1][:80]}...")
+                print(f" [r/{l[0]}] {l[1][:80]}...")
             
             conn.close()
         except Exception as e:
