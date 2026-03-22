@@ -1,12 +1,12 @@
-from sentence_transformers import SentenceTransformer
+from app.models.embedding_model import get_embedding_model
 from sklearn.metrics.pairwise import cosine_similarity
 import json
 from app.config import settings
 
 
-# Task 1 Reuse
+# Task 1 Reuse (Using Singleton to save memory on 2G RAM server)
 try:
-    model = SentenceTransformer('all-MiniLM-L6-v2')
+    model = get_embedding_model()
 except Exception as e:
     print(f"Error loading model: {e}")
     model = None

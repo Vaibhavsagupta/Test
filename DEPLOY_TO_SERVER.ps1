@@ -5,7 +5,7 @@ $USER = "root"
 
 Write-Host "--- Starting Deployment to $SERVER_IP ---" -ForegroundColor Cyan
 
-# 1. Zip local directory (excluding .venv and .git)
+# 1. Zip local directory (excluding .venv, .git, and large raw data)
 Write-Host "Compressing project files..." -ForegroundColor Yellow
 $zipFile = "project.zip"
 if (Test-Path $zipFile) { Remove-Item $zipFile }
@@ -13,16 +13,31 @@ if (Test-Path $zipFile) { Remove-Item $zipFile }
 $tempDir = Join-Path $env:TEMP "deploy_tmp"
 if (Test-Path $tempDir) { Remove-Item -Recurse -Force $tempDir }
 New-Item -ItemType Directory -Path $tempDir
-Copy-Item -Path "Dockerfile", "docker-compose.yml", "app.py", "*.py", "requirements.txt", "models", "data", "app" -Destination $tempDir -Recurse
+
+# Select only relevant files (ignore data/raw which is huge as pipeline will download it on server)
+$itemsToCopy = "Dockerfile", "docker-compose.yml", "*.py", "requirements.txt", "models", "app"
+foreach ($item in $itemsToCopy) {
+    if (Test-Path $item) {
+        Copy-Item -Path $item -Destination $tempDir -Recurse -Exclude ".venv", ".git", "__pycache__"
+    }
+}
+
+if (Test-Path "data") {
+    $dataDest = Join-Path $tempDir "data"
+    New-Item -ItemType Directory -Path $dataDest
+    # Copy processed database (prod.sqlite) but skip huge raw files
+    Copy-Item -Path "data\processed" -Destination $dataDest -Recurse -ErrorAction SilentlyContinue
+}
+
 Compress-Archive -Path "$tempDir\*" -DestinationPath $zipFile
 Remove-Item -Recurse -Force $tempDir
 
 # 2. Transfer project to server
-Write-Host "Uploading to server..." -ForegroundColor Yellow
+Write-Host "Uploading to server ($SERVER_IP)..." -ForegroundColor Yellow
 scp $zipFile "$($USER)@$($SERVER_IP):/root/"
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Error: Upload failed. Check your password or server SSH settings." -ForegroundColor Red
-    Remove-Item $zipFile
+    if (Test-Path $zipFile) { Remove-Item $zipFile }
     exit 1
 }
 
@@ -42,9 +57,17 @@ if ! command -v docker-compose &> /dev/null; then
     chmod +x /usr/local/bin/docker-compose
 fi
 
+# Clean up old images/containers to solve "No space left on device" error
+docker system prune -af
+docker volume prune -f
+
+# Clean up old database to reset schema
+rm -f $REMOTE_DIR/data/processed/prod.sqlite
+
 mkdir -p $REMOTE_DIR
 unzip -o /root/$zipFile -d $REMOTE_DIR
 cd $REMOTE_DIR
+docker-compose down
 docker-compose up --build -d
 "@
 

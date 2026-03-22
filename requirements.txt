@@ -12,4 +12,7 @@ python-multipart==0.0.9
 praw
 keybert
 pydantic-settings
+duckdb
+zstandard
+scikit-learn
 

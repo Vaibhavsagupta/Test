@@ -3,5 +3,29 @@
     "subreddits": ["HairTransplants", "tressless"],
     "keywords": ["hair transplant"],
     "icp": ["baldness", "hair loss", "receding hairline"]
+  },
+  "legal_consultant": {
+    "subreddits": ["legaladvice", "LegalAdviceUK"],
+    "keywords": ["lawyer", "solicitor", "attorney", "legal help"],
+    "icp": ["lawsuit", "court", "landlord tenant", "employment law", "legal advice needed"]
+  },
+  "travel_advisor": {
+    "subreddits": ["Turkey", "travel", "Istanbul"],
+    "keywords": ["travel guide", "hotel recommendation", "itinerary"],
+    "icp": ["visiting", "trip planning", "safe places to visit", "best restaurants"]
+  },
+  "global_prospector": {
+    "subreddits": [
+      "AskReddit", "DIY", "personalfinance", "SmallBusiness", "entrepreneur", "help", "advice", 
+      "careeradvice", "technology", "software", "homeimprovement", "legaladvice", "MedicalAdvice",
+      "Parenting", "RealEstate", "Startup", "Ecommerce", "marketing", "sales", "consulting",
+      "Freelance", "AskEngineers", "AskScience", "ExplainLikeImFive", "NoStupidQuestions",
+      "Relationships", "MentalHealth", "Anxiety", "Depression", "Gym", "Fitness", "Nutrition",
+      "CookHlp", "TechSupport", "PCMasterRace", "Gaming", "BuildAPC", "Automotive", "MechanicAdvice",
+      "Photography", "Videography", "Design", "Drawing", "Writing", "Learning", "Education",
+      "Teaching", "News", "Politics", "WorldNews"
+    ],
+    "keywords": ["can someone suggest", "how to fix", "best way to", "looking for recommendations", "recommend", "how much cost", "is it worth it"],
+    "icp": ["seeking help", "problem solving", "advice needed", "customer requirement", "interested in"]
   }
 }

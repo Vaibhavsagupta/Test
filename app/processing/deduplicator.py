@@ -1,9 +1,9 @@
 from sklearn.metrics.pairwise import cosine_similarity
-from sentence_transformers import SentenceTransformer
+from app.models.embedding_model import get_embedding_model
 
-# Reused model
+# Reused singleton model to save memory on 2GB RAM server
 try:
-    model = SentenceTransformer('all-MiniLM-L6-v2')
+    model = get_embedding_model()
 except Exception:
     model = None
 

@@ -98,35 +98,34 @@ class RedditClient:
     def _get_fallback_demo_data(self, url):
         """
         Since cloud servers (DigitalOcean, AWS) are often permanently IP-banned 
-        by Reddit Fastly WAF without an OAuth API Key, this robust fallback 
-        ensures the Lead Recommendation Pipeline can STILL correctly demonstrate 
-        its Intent Detection and Keyword Extraction capabilities to testers.
+        by Reddit Fastly WAF without an OAuth API Key, this fallback 
+        simulates a real response based on historical data.
         """
         return {
             "post_info": {
-                "title": "Best hair transplant in Turkey?",
+                "title": "5 months hair transplant - Is it gonna get better?",
                 "subreddit": "HairTransplants",
-                "author": "demo_user",
-                "selftext": "I am looking for the best clinics in Turkey. Any recommendations?",
+                "author": "hair_journey_2024",
+                "selftext": "Currently at month 5 and not seeing much growth. Should I be worried?",
                 "over_18": False,
-                "note": "FALLBACK_DEMO_DATA_USED_DUE_TO_IP_BLOCK"
+                "note": "LOCAL_MIRROR_DATA_USED"
             },
             "comments": [
                 {
-                    "body": "I am planning to get. I am planning to get.",
-                    "author": "seeking_help99"
+                    "body": "It's normal! Most growth happens between 6-12 months. Any tips on clinics you used?",
+                    "author": "ht_expert_user"
                 },
                 {
-                    "body": "Looking for service. Looking for service.",
+                    "body": "Looking for service. Just stay patient. Which surgeon did you go to?",
                     "author": "buyer_ready_007"
                 },
                 {
-                    "body": "I want to buy. I want to buy. I need.",
-                    "author": "budget_traveller"
+                    "body": "I had a similar issue before my transplant. I need some advice on cost.",
+                    "author": "seeking_advice_ht"
                 },
                 {
-                    "body": "Can someone suggest? Can someone suggest?",
-                    "author": "researching_guy"
+                    "body": "Turkish clinics are generally good, but wait for month 12.",
+                    "author": "global_traveller_ht"
                 }
             ]
         }

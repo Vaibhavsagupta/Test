@@ -10,8 +10,15 @@ data/raw/
 data/processed/
 data/interim/
 *.log
-*.txt
+*.zst
+*.part
+*.sqlite
 feedback_logs.pkl
 
-# Models (optional but recommended if they are large)
+# Archives
+*.zip
+*.tar.gz
+*.rar
+
+# Models
 # models/

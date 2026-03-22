@@ -6,8 +6,9 @@ def clean_text(text):
     text = text.lower()
     # Remove URLs
     text = re.sub(r"http\S+", "", text)
-    # Remove special characters but keep spaces
-    text = re.sub(r"[^a-zA-Z0-9 ]", "", text)
-    # Strip leading/trailing whitespaces
-    text = text.strip()
+    # Remove punctuation but KEEP everything else (\w matches English/Hindi/etc. letters)
+    text = re.sub(r"[^\w\s]", " ", text)
+    # Strip whitespaces
+    text = " ".join(text.split())
     return text
+

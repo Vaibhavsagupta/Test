@@ -4,8 +4,11 @@ def clean(text):
     if not isinstance(text, str):
         return ""
     text = text.lower()
+    # Remove URLs
     text = re.sub(r"http\S+", "", text)
-    text = re.sub(r"[^a-zA-Z0-9 ]", "", text)
+    # Remove special punctuation but KEEP all letters (English, Hindi, etc.) and numbers
+    # \w matches alphanumeric + underscores across languages in Python 3
+    text = re.sub(r"[^\w\s]", " ", text)
     return " ".join(text.split())
 
 def clean_data(records):

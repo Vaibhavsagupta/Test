@@ -7,7 +7,17 @@ templates = [
     "I want to buy",
     "I am planning to get",
     "Looking for service",
-    "Can someone suggest"
+    "Can someone suggest",
+    "looking for the best clinic",
+    "which surgeon is best",
+    "how much does a hair transplant cost",
+    "any advice for hair loss",
+    "best place for treatment",
+    "recommendations for surgery",
+    "worth it to get a transplant",
+    "budget friendly clinics",
+    "before and after results",
+    "help with receding hairline"
 ]
 
 template_embeddings = model.encode(templates)

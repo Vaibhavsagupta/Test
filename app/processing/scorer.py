@@ -4,7 +4,7 @@ def score_records(records):
     print(f"[SCORER] Calculating final scores using upgraded weights (0.4/0.2/0.2/0.2)...")
     
     now = int(datetime.now().timestamp())
-    MAX_AGE_SECONDS = 180 * 24 * 60 * 60 # 6 months
+    MAX_AGE_SECONDS = 365 * 24 * 60 * 60 # 12 months
     
     for r in records:
         # Phase 8: Weight distribution upgraded to include Recency
@@ -16,7 +16,7 @@ def score_records(records):
         # Engagement scaling (Cap at 100 upvotes = 1.0)
         engagement = min(max(0, r.get("score", 0)) / 100.0, 1.0)
         
-        # Recency scaling (Newer = 1.0, 180 days old = 0.0)
+        # Recency scaling (Newer = 1.0, 1 year old = 0.0)
         created_utc = r.get("created_utc", now)
         age_seconds = now - created_utc
         recency = max(0, 1.0 - (age_seconds / MAX_AGE_SECONDS))
